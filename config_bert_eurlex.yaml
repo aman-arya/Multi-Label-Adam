@@ -1,0 +1,70 @@
+###############################################
+# 1. Create the Configuration File for EUR-Lex
+###############################################
+
+# This configuration file is for training a BERT model on the EUR-Lex dataset.
+# The dataset is available at: https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multilabel.html#eurlex-4k
+# This config only serves as an example as it is not tuned by hyper-parameter search.
+# data
+# This config only serves as an example as it is not tuned by hyper-parameter search.
+
+
+# data
+training_file: eurlex_train_utf8.txt
+val_file: null
+test_file: eurlex_test_utf8.txt
+data_name: EUR-Lex
+min_vocab_freq: 1
+max_seq_length: 512
+include_test_labels: true
+add_special_tokens: true
+remove_no_label_data: false
+
+# train
+seed: 1337
+epochs: 100 # 100
+batch_size: 32
+optimizer: adamw  # (This will be modified in code to compare different AdamW variants)
+learning_rate: 0.00005
+weight_decay: 0.01
+patience: 10
+momentum: 0
+early_stopping_metric: RP@5
+shuffle: true
+loss_function: binary_cross_entropy_with_logits
+
+# eval 
+eval_batch_size: 32
+monitor_metrics: ['Micro-F1', 'Macro-F1', 'Another-Macro-F1', 'P@1', 'P@5', 'RP@5', 'nDCG@5']
+val_metric: RP@5
+
+# model
+model_name: BERT
+init_weight: null
+network_config:
+  encoder_hidden_dropout: 0.1
+  lm_weight: bert-base-uncased
+  lm_window: 512
+
+# pretrained vocab / embeddings
+vocab_file: null
+embed_file: null
+normalize_embed: false
+
+# other parameters specified in main.py::get_args
+checkpoint_path: null
+cpu: false
+data_workers: 4
+eval: false
+label_file: null
+limit_train_batches: 1.0
+limit_val_batches: 1.0
+limit_test_batches: 1.0
+metric_threshold: 0.5
+result_dir: runs
+save_k_predictions: 0
+silent: true
+val_size: 0.2
+lr_scheduler: null
+scheduler_config: null
+merge_train_val: false
